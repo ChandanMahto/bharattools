@@ -28,7 +28,13 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "budgets": [{ "type": "initial", "maximumWarning": "650kb", "maximumError": "1mb" }]
+              "budgets": [{ "type": "initial", "maximumWarning": "650kb", "maximumError": "1mb" }],
+              "fileReplacements": [
+                {
+                  "replace": "src/app/core/environment.ts",
+                  "with": "src/app/core/environment.production.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
