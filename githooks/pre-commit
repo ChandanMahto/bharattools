@@ -1,0 +1,34 @@
+#!/bin/sh
+# Auto-format staged files before commit (Prettier for Angular, Spotless for Spring Boot)
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+# ---------- Frontend: Prettier ----------
+FE=$(echo "$STAGED" | grep -E '^frontend/.*\.(ts|html|scss|css|json)$')
+if [ -n "$FE" ]; then
+  echo "Formatting frontend files with Prettier..."
+  echo "$FE" | sed 's|^frontend/||' | (cd frontend && xargs npx prettier --write)
+  if [ $? -ne 0 ]; then
+    echo "Prettier failed. Commit aborted."
+    exit 1
+  fi
+  echo "$FE" | xargs git add
+fi
+
+# ---------- Backend: Spotless ----------
+BE=$(echo "$STAGED" | grep -E '^backend/.*\.java$')
+if [ -n "$BE" ]; then
+  echo "Formatting backend files with Spotless..."
+  if [ -f backend/mvnw ]; then
+    (cd backend && sh ./mvnw -q spotless:apply)
+  else
+    (cd backend && mvn -q spotless:apply)
+  fi
+  if [ $? -ne 0 ]; then
+    echo "Spotless failed. Commit aborted."
+    exit 1
+  fi
+  echo "$BE" | xargs git add
+fi
+
+exit 0

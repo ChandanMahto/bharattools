@@ -1,0 +1,34 @@
+
+spring:
+  application:
+    name: bharattools-api
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/bharattools}
+    username: ${DB_USERNAME:bharattools}
+    password: ${DB_PASSWORD:local_dev_change_me}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:local-only-change-this-secret-to-at-least-32-bytes}
+    expiration-hours: ${JWT_EXPIRATION_HOURS:12}
+
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:4200}
